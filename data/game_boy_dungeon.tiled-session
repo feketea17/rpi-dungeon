@@ -1,0 +1,188 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "tmx/level_8.tmx",
+    "expandedProjectPaths": [
+        "tmx",
+        "tsx",
+        "."
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "tmx/level_1.tmx": {
+            "expandedObjectLayers": [
+                4
+            ],
+            "scale": 2,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 206.25,
+                "y": 56
+            }
+        },
+        "tmx/level_2.tmx": {
+            "expandedObjectLayers": [
+                4
+            ],
+            "scale": 3,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 160.16666666666669,
+                "y": 120
+            }
+        },
+        "tmx/level_3.tmx": {
+            "expandedObjectLayers": [
+                4
+            ],
+            "scale": 3.0667187499999997,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 159.94293575177056,
+                "y": 119.99796199113467
+            }
+        },
+        "tmx/level_4.tmx": {
+            "expandedObjectLayers": [
+                4
+            ],
+            "scale": 3,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 160.16666666666669,
+                "y": 120
+            }
+        },
+        "tmx/level_5.tmx": {
+            "expandedObjectLayers": [
+                4
+            ],
+            "scale": 3,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 160.16666666666669,
+                "y": 120
+            }
+        },
+        "tmx/level_6.tmx": {
+            "expandedObjectLayers": [
+                4
+            ],
+            "scale": 3.5308333333333333,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 159.8772716544725,
+                "y": 120.08496577767288
+            }
+        },
+        "tmx/level_7.tmx": {
+            "expandedObjectLayers": [
+                4
+            ],
+            "scale": 3.5308333333333333,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 159.8772716544725,
+                "y": 120.08496577767288
+            }
+        },
+        "tmx/level_8.tmx": {
+            "expandedObjectLayers": [
+                4
+            ],
+            "scale": 3.5308333333333333,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 200.9440641963654,
+                "y": 120.08496577767288
+            }
+        },
+        "tmx/level_9.tmx": {
+            "expandedObjectLayers": [
+                4
+            ],
+            "scale": 3,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 192.5,
+                "y": 127.33333333333334
+            }
+        },
+        "tmx/level_boss.tmx": {
+            "expandedObjectLayers": [
+                4
+            ],
+            "scale": 3.0667187499999997,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 159.94293575177056,
+                "y": 119.99796199113467
+            }
+        },
+        "tsx/enemy_rat.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tsx/tileset_main.tsx": {
+            "scaleInDock": 1.5,
+            "scaleInEditor": 1
+        },
+        "tsx/tileset_player.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tsx/tileset_props.tsx": {
+            "scaleInDock": 2,
+            "scaleInEditor": 1
+        },
+        "tsx/tileset_props_animated.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        }
+    },
+    "frame.defaultDuration": 600,
+    "last.imagePath": "C:/Users/feket/Documents/Python Projects/python-2d-game-boy-dungeon/images",
+    "map.height": 15,
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
+    "map.width": 20,
+    "openFiles": [
+        "tmx/level_1.tmx",
+        "tmx/level_2.tmx",
+        "tmx/level_3.tmx",
+        "tmx/level_4.tmx",
+        "tmx/level_5.tmx",
+        "tmx/level_6.tmx",
+        "tmx/level_7.tmx",
+        "tmx/level_8.tmx",
+        "tmx/level_9.tmx",
+        "tmx/level_boss.tmx",
+        "tsx/tileset_main.tsx",
+        "tsx/tileset_props.tsx",
+        "tsx/tileset_props_animated.tsx"
+    ],
+    "project": "game_boy_dungeon.tiled-project",
+    "property.type": "int",
+    "recentFiles": [
+        "tmx/level_1.tmx",
+        "tmx/level_2.tmx",
+        "tmx/level_3.tmx",
+        "tmx/level_4.tmx",
+        "tmx/level_5.tmx",
+        "tmx/level_6.tmx",
+        "tmx/level_7.tmx",
+        "tsx/tileset_props_animated.tsx",
+        "tsx/tileset_props.tsx",
+        "tsx/tileset_main.tsx",
+        "tmx/level_boss.tmx",
+        "tmx/level_9.tmx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 16,
+        "width": 16
+    }
+}

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="20" height="15" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="18">
+ <tileset firstgid="1" source="../tsx/tileset_main.tsx"/>
+ <tileset firstgid="641" source="../tsx/tileset_props.tsx"/>
+ <tileset firstgid="793" source="../tsx/tileset_props_animated.tsx"/>
+ <layer id="1" name="background" width="20" height="15">
+  <data encoding="csv">
+147,147,147,147,147,147,147,147,147,147,147,147,147,147,147,147,147,147,147,147,
+147,147,147,147,147,147,147,147,147,147,147,147,147,147,147,147,147,147,147,147,
+147,147,147,147,147,348,347,347,347,347,347,347,347,347,347,347,347,227,147,147,
+147,147,147,147,147,347,9,11,11,173,11,11,491,11,11,11,12,147,147,147,
+147,147,147,147,147,347,49,269,269,269,269,269,269,269,269,493,92,280,147,147,
+147,147,147,147,147,347,49,493,269,269,269,269,269,269,269,269,92,147,147,147,
+147,147,147,147,147,347,129,130,130,130,130,130,130,130,86,87,132,147,147,147,
+147,147,147,147,147,307,147,147,147,147,147,147,147,347,49,92,347,350,147,147,
+147,147,147,348,347,347,347,347,347,147,147,147,147,347,49,92,147,147,147,147,
+147,147,147,147,9,11,11,11,11,11,11,11,11,11,46,92,147,147,147,147,
+147,147,147,147,49,269,269,269,269,269,269,269,269,269,493,92,147,147,147,147,
+147,147,147,147,49,493,269,269,87,130,130,130,130,130,130,132,147,147,147,147,
+147,147,147,147,129,130,130,130,132,347,147,147,147,147,147,147,350,147,147,147,
+147,147,147,307,147,147,147,147,147,350,147,147,147,147,147,147,147,147,147,147,
+147,147,147,147,147,147,147,147,147,147,147,147,147,147,147,147,147,147,147,147
+</data>
+ </layer>
+ <layer id="2" name="colliders" width="20" height="15">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,230,234,230,233,230,235,230,230,230,234,233,0,0,0,
+0,0,0,0,0,228,660,698,680,0,0,0,0,0,0,0,0,240,0,0,
+0,0,0,0,0,314,0,0,0,0,90,0,0,0,0,0,0,0,147,0,
+0,0,0,0,0,315,0,0,0,0,0,0,0,0,0,0,0,320,0,0,
+0,0,0,0,0,228,0,0,0,0,0,701,0,0,0,0,0,310,0,0,
+0,0,0,0,0,0,308,308,308,308,308,308,308,309,0,0,270,0,0,0,
+0,0,0,0,656,656,234,235,656,230,230,234,230,268,0,0,310,0,0,0,
+0,0,0,228,675,675,651,652,675,0,0,0,680,700,0,0,274,0,0,0,
+0,0,0,315,0,0,0,0,0,0,0,0,0,0,0,0,310,0,0,0,
+0,0,0,315,660,0,0,0,0,0,130,0,0,0,0,662,274,0,0,0,
+0,0,0,228,661,662,0,0,0,270,308,353,308,354,308,308,0,0,0,0,
+0,0,0,0,353,354,308,354,308,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <layer id="3" name="animated" width="20" height="15">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,848,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,813,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <objectgroup id="4" name="objects">
+  <object id="1" name="player" x="96" y="192" width="16" height="16"/>
+  <object id="2" name="pot" x="144" y="144" width="16" height="16"/>
+  <object id="3" name="pot" x="240" y="160" width="16" height="16"/>
+  <object id="4" name="pot" x="224" y="176" width="16" height="16"/>
+  <object id="5" name="pot" x="96" y="96" width="16" height="16"/>
+  <object id="6" name="pot" x="112" y="96" width="16" height="16"/>
+  <object id="7" name="pot" x="208" y="48" width="16" height="16"/>
+  <object id="8" name="pot" x="224" y="48" width="16" height="16"/>
+  <object id="9" name="pot" x="256" y="96" width="16" height="16"/>
+  <object id="10" name="enemy" x="160" y="160.667" width="16" height="16">
+   <properties>
+    <property name="blocks" type="int" value="3"/>
+    <property name="enemy_movement" value="horizontal"/>
+    <property name="enemy_type" value="bat"/>
+   </properties>
+  </object>
+  <object id="11" name="enemy" x="224" y="80" width="16" height="16">
+   <properties>
+    <property name="blocks" type="int" value="4"/>
+    <property name="enemy_movement" value="vertical"/>
+    <property name="enemy_type" value="rat"/>
+   </properties>
+  </object>
+  <object id="12" name="pickup" x="160" y="48" width="16" height="16">
+   <properties>
+    <property name="pickup_type" value="coin"/>
+   </properties>
+  </object>
+  <object id="13" name="pickup" x="176" y="144" width="16" height="16">
+   <properties>
+    <property name="pickup_type" value="coin"/>
+   </properties>
+  </object>
+  <object id="14" name="pickup" x="256" y="48" width="16" height="16">
+   <properties>
+    <property name="pickup_type" value="coin"/>
+   </properties>
+  </object>
+  <object id="15" name="pickup" x="64" y="160" width="16" height="16">
+   <properties>
+    <property name="pickup_type" value="heart"/>
+   </properties>
+  </object>
+  <object id="16" name="pickup" x="96" y="80" width="16" height="16">
+   <properties>
+    <property name="pickup_type" value="heart"/>
+   </properties>
+  </object>
+  <object id="17" name="door" x="272" y="64" width="8" height="16">
+   <properties>
+    <property name="locked" type="bool" value="false"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

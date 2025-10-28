@@ -1,7 +1,12 @@
-import os, time, sys
-os.putenv('SDL_VIDEODRIVER', 'fbcon')
-os.putenv('SDL_FBDEV', '/dev/fb1')
-import pgzrun, pygame, pytmx
+import os
+import time
+import sys
+
+import pygame
+pygame.init()
+
+import pgzrun
+import pytmx
 import pgzero.music as music
 from pgzero.loaders import sounds
 from functools import lru_cache
@@ -2364,30 +2369,76 @@ class LevelLoader:
 # === JÁTÉK CIKLUS ===
 game_state_manager = GameStateManager()
 
+# Define the Framebuffer Path (Confirmed by all logs)
+FB_PATH = '/dev/fb1' 
 
-def update():
-    game_state_manager.update()
-    game_state_manager.handle_input()
+# Set screen globally as Pygame Zero expects
+global screen
+screen = None
 
-    if (
-        game_state_manager.current_state == STATE_GAME
-        and game_state_manager.level_loader
-    ):
-        game_state_manager.level_loader.set_paused(game_state_manager.game_paused)
+def display_init():
+    # Pygame initialization must happen first
+    pygame.init()
+    # Use 16-bit color depth for RPi SPI display compatibility
+    return pygame.display.set_mode((WIDTH, HEIGHT), 0, 16) 
+
+# Manual display function: Writes pixel buffer to the file device
+def draw_to_framebuffer(screen_surface):
+    # This must use standard Python file I/O to bypass broken SDL drivers
+    try:
+        with open(FB_PATH, 'wb') as f:
+            # get_view('P')[0] reliably pulls the raw pixel buffer from the surface
+            f.write(screen_surface.get_view('P')[0]) 
+    except Exception as e:
+        # If writing fails, print the error and exit cleanly
+        print(f"ERROR: Could not write to framebuffer {FB_PATH}: {e}")
+        # We rely on the service to keep running if Pygame doesn't quit itself
+        pass
 
 
-def draw():
-    screen.clear()
-    game_state_manager.draw(screen.surface)
+# --- MANUAL GAME LOOP ---
+def run_game():
+    global screen
+    
+    # Initialize the screen surface
+    screen_surface = display_init()
+    
+    # Create the Pygame Zero screen wrapper object
+    screen = pgzero.screen.Screen(screen_surface)
+    
+    clock = pygame.time.Clock()
+    game_state_manager._change_state(STATE_LOGO)
+    
+    while True:
+        clock.tick(60) # Maintain 60 FPS
+        dt = clock.get_time() / 1000.0
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return # Exit the loop
+
+        game_state_manager.update()
+        game_state_manager.handle_input()
+        
+        # Call your existing draw() function
+        draw()
+        
+        # Manually push the Pygame Surface data to the physical screen
+        draw_to_framebuffer(screen_surface) 
 
 
 def cleanup():
-    AnimationManager.clear_caches()
-    input_handler.cleanup()
-    pygame.quit()
-
-
+    # This function is now only responsible for internal cleanup
+    input_handler.cleanup() 
+    
 import atexit
-
 atexit.register(cleanup)
-pgzrun.go()
+
+# Start the game loop
+try:
+    run_game()
+except Exception as e:
+    # If there is a Python error, print it before cleanup
+    print(f"An unexpected error occurred: {e}")
+    cleanup()
+

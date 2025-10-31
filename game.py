@@ -77,40 +77,18 @@ except (ImportError, RuntimeError):
 # === HANG ===
 class AudioHandler:
     def __init__(self):
+        # Disable all audio functionality to confirm if it is the crash cause
         self.sounds = {}
         self.current_music = None
-        self._load_sounds()
-
-    def _load_sounds(self):
-        """Load all sound effects"""
-        sound_files = [
-            'gold_2', 'accept_2', 'sword_2', 'hit_7', 'game_over',
-            'gold_2', 'bonus_3', 'coin_3', 'levelup_3', 'bounce_2', 'wings'
-        ]
-        for sound_name in sound_files:
-            try:
-                self.sounds[sound_name] = pygame.mixer.Sound(f'sounds/{sound_name}.ogg')
-            except:
-                print(f"Could not load sound: {sound_name}")
 
     def play_sound(self, sound_name):
-        """Play a sound effect"""
-        if sound_name in self.sounds:
-            self.sounds[sound_name].play()
+        pass # Do nothing
 
     def play_music(self, music_name):
-        """Play background music"""
-        try:
-            pygame.mixer.music.load(f'music/{music_name}.ogg')
-            pygame.mixer.music.play(-1)  # -1 means loop forever
-            self.current_music = music_name
-        except:
-            print(f"Could not load music: {music_name}")
+        pass # Do nothing
 
     def stop_music(self):
-        """Stop background music"""
-        pygame.mixer.music.stop()
-        self.current_music = None
+        pass # Do nothing
 
 audio_handler = AudioHandler()
 

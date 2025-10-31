@@ -2420,11 +2420,11 @@ game_state_manager = GameStateManager()
 
 def main():
     """Main game loop"""
-    global screen, clock
+    global screen, clock # <-- CRITICAL GLOBAL SCOPE
 
-    # 1. CRITICAL: Set the actual screen/display mode
-    # Use 16-bit depth (often required by SPI displays)
-    screen = pygame.display.set_mode((WIDTH, HEIGHT), 0, 16)
+    # 1. CRITICAL: Set the actual screen/display mode (Needs to be inside main)
+    # This must match the draw_to_framebuffer() logic!
+    screen = pygame.display.set_mode((WIDTH, HEIGHT), 0, 16) 
     clock = pygame.time.Clock()
 
     running = True
@@ -2432,7 +2432,8 @@ def main():
 
     try:
         while running:
-            # Handle pygame events (must be done in the loop)
+            clock.tick(60) # 60 FPS
+            
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
@@ -2444,8 +2445,12 @@ def main():
             # --- Draw Logic ---
             game_state_manager.draw(screen)
 
-            # --- CRITICAL DISPLAY STEP ---
-            draw_to_framebuffer(screen)
+            # --- FINAL CRITICAL DISPLAY STEP ---
+            # 1. Update Pygame's internal buffer (Draws to the surface)
+            # pygame.display.flip() # <-- DELETE THIS LINE IF YOU SEE IT
+            
+            # 2. Manually push the Pygame Surface data to the physical screen
+            draw_to_framebuffer(screen) # <-- THIS IS THE LINE THAT WRITES TO THE SPI SCREEN!
 
             clock.tick(60)  # 60 FPS
 
@@ -2462,3 +2467,4 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"An unexpected error occurred during main loop: {e}")
         raise
+

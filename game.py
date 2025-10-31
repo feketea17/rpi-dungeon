@@ -2,13 +2,18 @@ import os
 import time
 import sys
 
-import pygame
-pygame.init()
+# --- HEADLESS DISPLAY SETUP ---
+# CRITICAL: Forces Pygame to look for the framebuffer device
+#os.environ['SDL_FBDEV'] = '/dev/fb1'
+#os.environ['SDL_VIDEODRIVER'] = 'fbdev' # Using 'fbdev' as it's the generic framebuffer driver
+# --- END HEADLESS DISPLAY SETUP ---
 
-import pgzrun
+import pygame
+import pygame.mixer
+pygame.init()
+pygame.mixer.init()
+
 import pytmx
-import pgzero.music as music
-from pgzero.loaders import sounds
 from functools import lru_cache
 
 
@@ -17,6 +22,12 @@ WIDTH, HEIGHT = 320, 240
 TILE_SIZE = 16
 MOVEMENT_COOLDOWN = 0.15
 DEBUG_MODE_ON = False
+
+#screen = pygame.display.set_mode((WIDTH, HEIGHT))
+#clock = pygame.time.Clock()
+
+screen = None
+clock = None
 
 SCORE = 0  # Pontszám
 HAS_KEY = False  # Kulcs
@@ -63,6 +74,47 @@ except (ImportError, RuntimeError):
     print("GPIO nem elérhető")
 
 
+# === HANG ===
+class AudioHandler:
+    def __init__(self):
+        self.sounds = {}
+        self.current_music = None
+        self._load_sounds()
+
+    def _load_sounds(self):
+        """Load all sound effects"""
+        sound_files = [
+            'gold_2', 'accept_2', 'sword_2', 'hit_7', 'game_over',
+            'gold_2', 'bonus_3', 'coin_3', 'levelup_3', 'bounce_2', 'wings'
+        ]
+        for sound_name in sound_files:
+            try:
+                self.sounds[sound_name] = pygame.mixer.Sound(f'sounds/{sound_name}.ogg')
+            except:
+                print(f"Could not load sound: {sound_name}")
+
+    def play_sound(self, sound_name):
+        """Play a sound effect"""
+        if sound_name in self.sounds:
+            self.sounds[sound_name].play()
+
+    def play_music(self, music_name):
+        """Play background music"""
+        try:
+            pygame.mixer.music.load(f'music/{music_name}.ogg')
+            pygame.mixer.music.play(-1)  # -1 means loop forever
+            self.current_music = music_name
+        except:
+            print(f"Could not load music: {music_name}")
+
+    def stop_music(self):
+        """Stop background music"""
+        pygame.mixer.music.stop()
+        self.current_music = None
+
+audio_handler = AudioHandler()
+
+# === INPUT ===
 class InputHandler:
     def __init__(self):
         self.gpio_enabled = False
@@ -125,22 +177,25 @@ class InputHandler:
             pin = self.gpio_pins[button_name]
             return not GPIO.input(pin)
 
+        # Get keyboard state
+        keys = pygame.key.get_pressed()
+
         if button_name == "LEFT":
-            return keyboard.left
+            return keys[pygame.K_LEFT]
         elif button_name == "RIGHT":
-            return keyboard.right
+            return keys[pygame.K_RIGHT]
         elif button_name == "UP":
-            return keyboard.up
+            return keys[pygame.K_UP]
         elif button_name == "DOWN":
-            return keyboard.down
+            return keys[pygame.K_DOWN]
         elif button_name == "A":
-            return keyboard.space
+            return keys[pygame.K_SPACE]
         elif button_name == "B":
-            return keyboard.RETURN
+            return keys[pygame.K_RETURN]
         elif button_name == "SELECT":
-            return keyboard.d
+            return keys[pygame.K_d]
         elif button_name == "START":
-            return keyboard.p
+            return keys[pygame.K_p]
 
         return False
 
@@ -148,9 +203,20 @@ class InputHandler:
         if self.gpio_enabled:
             GPIO.cleanup()
 
-
-# Create global input handler
 input_handler = InputHandler()
+
+# Framebuffer Path
+FB_PATH = '/dev/fb1'
+def draw_to_framebuffer(screen_surface):
+    """Writes the raw pixel buffer directly to the Linux Framebuffer device."""
+    try:
+        with open(FB_PATH, 'wb') as f:
+            # Safest way to get the 16-bit buffer and write it:
+            f.write(screen_surface.convert(16).get_buffer()) # <-- USE .convert(16) AND .get_buffer()
+    except Exception as e:
+        print(f"ERROR: Could not write to framebuffer {FB_PATH}: {e}")
+        pass
+
 
 # === HIGH SCORE ===
 @lru_cache(maxsize=1)
@@ -268,7 +334,7 @@ class GameStateManager:
             self._start_state_transition(STATE_TITLE)
             return
         try:
-            music.play("end_theme_2")
+            audio_handler.play_music("end_theme_2")
         except:
             pass
 
@@ -321,7 +387,7 @@ class GameStateManager:
 
         elif new_state == STATE_TITLE:
             try:
-                music.play("village")
+                audio_handler.play_music("village")
             except:
                 pass
 
@@ -363,7 +429,7 @@ class GameStateManager:
         elapsed = current_time - self.logo_timer
 
         if not self.logo_sound_played and elapsed >= self.logo_sound_delay:
-            sounds.gold_2.play()
+            audio_handler.play_sound('gold_2')
             self.logo_sound_played = True
 
         if elapsed >= self.logo_duration:
@@ -407,7 +473,8 @@ class GameStateManager:
     # INPUT FÜGGVÉNYEK
     def handle_input(self):
         # ESC billentyű a kilépéshez (minden állapotban működik)
-        if keyboard.ESCAPE:
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_ESCAPE]:
             pygame.quit()
             sys.exit(0)
 
@@ -432,12 +499,13 @@ class GameStateManager:
             or input_handler.is_pressed("A")
             or input_handler.is_pressed("B")
         ):
-            sounds.accept_2.play()
+            audio_handler.play_sound('accept_2')
             self._start_state_transition(STATE_GAME)
             time.sleep(0.2)
 
     def _handle_game_input(self):
-        if keyboard.ESCAPE:
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_ESCAPE]:
             pygame.quit()
             sys.exit(0)
 
@@ -502,7 +570,8 @@ class GameStateManager:
                     self.level_loader.move_player(0, 1)
 
     def _handle_game_over_input(self):
-        if keyboard.ESCAPE:  # Keep ESC as keyboard-only for development
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_ESCAPE]:
             pygame.quit()
             sys.exit(0)
 
@@ -528,7 +597,8 @@ class GameStateManager:
 
             time.sleep(0.2)
 
-        if keyboard.ESCAPE:  # Keep ESC as keyboard-only
+        keys = pygame.key.get_pressed()  # ✅ CORRECT
+        if keys[pygame.K_ESCAPE]:
             self._start_state_transition(STATE_TITLE)
 
     # DRAW FÜGGVÉNYEK
@@ -1068,7 +1138,7 @@ class Player:
         # Támadás állapot
         self.state = "attacking"
         self.state_timer = time.time()
-        sounds.sword_2.play()
+        audio_handler.play_sound('sword_2')
 
         # Kard animáció indítása
         self.sword_anim.play(f"attack_{self.facing}", True)
@@ -1094,15 +1164,15 @@ class Player:
         self.state_timer = time.time()
         self.invincible_timer = 1.8
 
-        sounds.hit_7.play()
+        audio_handler.play_sound('hit_7')
         self.anim.play(f"hurt_{self.facing}", True)
 
     def _start_death(self):
         self.state = "dying"
         self.state_timer = time.time()
 
-        music.stop()
-        sounds.game_over.play()
+        audio_handler.stop_music()
+        audio_handler.play_sound('game_over')
         self.anim.play(f"die_{self.facing}", True)
 
     # LEKÉRDEZŐ FÜGGVÉNYEK ÉS SEGÉDFÜGGVÉNYEK
@@ -1285,7 +1355,7 @@ class Enemy:
     def start_death(self):
         self.state = "dying"
         self.state_timer = time.time()
-        sounds.hit_7.play()
+        audio_handler.play_sound('hit_7')
 
     def should_be_removed(self):
         return self.state == "dying" and time.time() - self.state_timer >= 1.0
@@ -1519,7 +1589,7 @@ class Boss(Enemy):
         # Sérülés animáció és hang lejátszása
         hurt_anim = f"hurt_{self.facing}"
         self.anim.play(hurt_anim, True)
-        sounds.hit_7.play()
+        audio_handler.play_sound('hit_7')
 
         # Pontszám hozzáadása találatért
         global SCORE
@@ -1533,8 +1603,8 @@ class Boss(Enemy):
         self.state_timer = time.time()
         self.victory_timer = time.time()
 
-        music.stop()
-        sounds.levelup_3.play()
+        audio_handler.stop_music()
+        audio_handler.play_sound('levelup_3')
 
         global SCORE, HIGH_SCORE
         SCORE += 500
@@ -1727,15 +1797,15 @@ class Pickup:
     def _collect_coin(self, player):
         global SCORE
         SCORE += 10
-        sounds.gold_2.play()
+        audio_handler.play_sound('gold_2')
 
     def _collect_heart(self, player):
         player.health += 1
-        sounds.bonus_3.play()
+        audio_handler.play_sound('bonus_3')
 
     def _collect_key(self, player):
         global HAS_KEY
-        sounds.coin_3.play()
+        audio_handler.play_sound('coin_3')
         HAS_KEY = True
 
     # LEKÉRDEZŐ FÜGGVÉNYEK ÉS SEGÉDFÜGGVÉNYEK
@@ -1805,9 +1875,9 @@ class Pot:
         if random.random() < 0.6:
             global SCORE
             SCORE += 10
-            sounds.gold_2.play()
+            audio_handler.play_sound('gold_2')
         else:
-            sounds.bounce_2.play()
+            audio_handler.play_sound('bounce_2')
 
         return True
 
@@ -2004,9 +2074,9 @@ class LevelLoader:
 
     def _load_music(self, filename):
         try:
-            music.stop()
+            audio_handler.stop_music()
             if os.path.exists(f"music/{filename}.ogg"):
-                music.play(filename)
+                audio_handler.play_music(filename)  # ✅ CORRECT
         except Exception as e:
             print(f"{e}")
 
@@ -2233,7 +2303,7 @@ class LevelLoader:
                         HAS_KEY = False
 
                     try:
-                        sounds.wings.play()
+                        audio_handler.play_sound('wings')
                     except:
                         pass
                     self.start_transition()
@@ -2369,76 +2439,48 @@ class LevelLoader:
 # === JÁTÉK CIKLUS ===
 game_state_manager = GameStateManager()
 
-# Define the Framebuffer Path (Confirmed by all logs)
-FB_PATH = '/dev/fb1' 
 
-# Set screen globally as Pygame Zero expects
-global screen
-screen = None
+def main():
+    """Main game loop"""
+    global screen, clock
 
-def display_init():
-    # Pygame initialization must happen first
-    pygame.init()
-    # Use 16-bit color depth for RPi SPI display compatibility
-    return pygame.display.set_mode((WIDTH, HEIGHT), 0, 16) 
-
-# Manual display function: Writes pixel buffer to the file device
-def draw_to_framebuffer(screen_surface):
-    # This must use standard Python file I/O to bypass broken SDL drivers
-    try:
-        with open(FB_PATH, 'wb') as f:
-            # get_view('P')[0] reliably pulls the raw pixel buffer from the surface
-            f.write(screen_surface.get_view('P')[0]) 
-    except Exception as e:
-        # If writing fails, print the error and exit cleanly
-        print(f"ERROR: Could not write to framebuffer {FB_PATH}: {e}")
-        # We rely on the service to keep running if Pygame doesn't quit itself
-        pass
-
-
-# --- MANUAL GAME LOOP ---
-def run_game():
-    global screen
-    
-    # Initialize the screen surface
-    screen_surface = display_init()
-    
-    # Create the Pygame Zero screen wrapper object
-    screen = pgzero.screen.Screen(screen_surface)
-    
+    # 1. CRITICAL: Set the actual screen/display mode
+    # Use 16-bit depth (often required by SPI displays)
+    screen = pygame.display.set_mode((WIDTH, HEIGHT), 0, 16)
     clock = pygame.time.Clock()
+
+    running = True
     game_state_manager._change_state(STATE_LOGO)
-    
-    while True:
-        clock.tick(60) # Maintain 60 FPS
-        dt = clock.get_time() / 1000.0
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                return # Exit the loop
+    try:
+        while running:
+            # Handle pygame events (must be done in the loop)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
 
-        game_state_manager.update()
-        game_state_manager.handle_input()
-        
-        # Call your existing draw() function
-        draw()
-        
-        # Manually push the Pygame Surface data to the physical screen
-        draw_to_framebuffer(screen_surface) 
+            # --- Update Logic ---
+            game_state_manager.update()
+            game_state_manager.handle_input()
+
+            # --- Draw Logic ---
+            game_state_manager.draw(screen)
+
+            # --- CRITICAL DISPLAY STEP ---
+            draw_to_framebuffer(screen)
+
+            clock.tick(60)  # 60 FPS
+
+    finally:
+        AnimationManager.clear_caches()
+        input_handler.cleanup()
+        pygame.mixer.quit()
+        pygame.quit()
 
 
-def cleanup():
-    # This function is now only responsible for internal cleanup
-    input_handler.cleanup() 
-    
-import atexit
-atexit.register(cleanup)
-
-# Start the game loop
-try:
-    run_game()
-except Exception as e:
-    # If there is a Python error, print it before cleanup
-    print(f"An unexpected error occurred: {e}")
-    cleanup()
-
+if __name__ == "__main__":
+    try:
+        main()
+    except Exception as e:
+        print(f"An unexpected error occurred during main loop: {e}")
+        raise

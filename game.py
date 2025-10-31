@@ -256,7 +256,7 @@ class GameStateManager:
         self.transitioning = False
         self.transition_timer = 0
         self.transition_duration = 0.5
-        self.transition_surface = pygame.Surface((WIDTH, HEIGHT)).convert_alpha()
+        #self.transition_surface = pygame.Surface((WIDTH, HEIGHT)).convert_alpha()
         self.next_state = None
 
         # Time cache a System Call-ok csökkentésére
@@ -2467,4 +2467,5 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"An unexpected error occurred during main loop: {e}")
         raise
+
 
